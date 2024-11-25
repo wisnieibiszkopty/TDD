@@ -1,8 +1,11 @@
 package com.example.tdd;
 
+import com.example.tdd.exception.GradesNotFoundException;
+import com.example.tdd.exception.StudentNotFoundException;
 import com.example.tdd.model.Grade;
 import com.example.tdd.model.Student;
 import com.example.tdd.repository.GradeRepository;
+import com.example.tdd.repository.StudentRepository;
 import com.example.tdd.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,6 +29,9 @@ public class GradeUnitTests {
     @Mock
     private GradeRepository gradeRepository;
 
+    @Mock
+    private StudentRepository studentRepository;
+
     @InjectMocks
     private StudentService studentService;
 
@@ -33,7 +40,7 @@ public class GradeUnitTests {
         Long studentId = 1L;
         Double mark = 5.0;
         Student student = Student.builder().id(studentId).name("Kamil").build();
-        Grade grade = new Grade(student, mark);
+        Grade grade = Grade.builder().value(3.0).id(1L).build();
 
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
         when(gradeRepository.save(grade)).thenReturn(grade);
@@ -50,10 +57,8 @@ public class GradeUnitTests {
         Long studentId = 1L;
         Double mark = 5.0;
 
-        // Mockowanie repozytorium, aby zwrócić pusty wynik
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        // Sprawdzanie, czy metoda rzuca wyjątek
         Exception exception = assertThrows(StudentNotFoundException.class, () -> {
             studentService.addGradeToStudent(studentId, mark);
         });

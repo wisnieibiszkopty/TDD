@@ -1,5 +1,7 @@
 package com.example.tdd;
 
+import com.example.tdd.dto.StudentDto;
+import com.example.tdd.exception.JournalNotFoundException;
 import com.example.tdd.model.Journal;
 import com.example.tdd.model.Student;
 import com.example.tdd.repository.JournalRepository;
@@ -11,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,10 +35,11 @@ public class StudentUnitTests {
 
     @Test
     public void givenStudentData_saveStudent_ThenReturnStudent(){
+        var studentDto = new StudentDto("Kamil");
         var student = Student.builder().name("Kamil").build();
         when(studentRepository.save(student)).thenReturn(student);
 
-        var result = studentService.createStudent(student);
+        var result = studentService.createStudent(studentDto);
         assertNotNull(result);
         verify(studentRepository, times(1)).save(student);
     }
@@ -63,5 +65,19 @@ public class StudentUnitTests {
         assertNotNull(result);
         assertEquals(1, result.getStudents().size());
         assertTrue(result.getStudents().contains(student));
+    }
+
+    @Test
+    public void givenStudentIdAndJournalId_JournalNotFind_ThenThrowError(){
+        Long studentId = 1L;
+        Long journalId = 100L;
+
+        when(journalRepository.findById(journalId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(JournalNotFoundException.class, () -> {
+            studentService.addToJournal(studentId, journalId);
+        });
+
+        assertEquals("Journal not found", exception.getMessage());
     }
 }
