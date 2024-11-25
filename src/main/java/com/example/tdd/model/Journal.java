@@ -21,7 +21,7 @@ public class Journal {
 
     private String name;
 
-    @ManyToMany(mappedBy = journals)
+    @ManyToMany(mappedBy = "journals")
     private List<Student> students;
 
 }

@@ -70,16 +70,16 @@ public class GradeUnitTests {
     public void givenStudentId_computeAverageGrade_thenReturnStudent(){
         Long studentId = 1L;
         Student student = Student.builder().id(studentId).name("Kamil").build();
-        Grade grade1 = new Grade(student, 5.0);
-        Grade grade2 = new Grade(student, 4.0);
+        Grade grade1 = Grade.builder().id(1L).value(5.0).student(student).build();
+        Grade grade2 = Grade.builder().id(2L).value(4.0).student(student).build();
         student.setGrades(List.of(grade1, grade2));
 
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
 
-        Student result = studentService.computeAverageGrade(studentId);
+        Double result = studentService.computeAverageGrade(studentId);
 
         assertNotNull(result);
-        assertEquals(4.5, result.getAverageGrade());
+        assertEquals(4.5, result);
     }
 
     @Test

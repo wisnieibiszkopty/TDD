@@ -7,10 +7,14 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-// TODO add requests dtos
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -26,7 +30,7 @@ public class JournalTests {
     private MockMvc mvc;
 
     @Test
-    public void whenValidInput_thenCreateJournal(){
+    public void whenValidInput_thenCreateJournal() throws Exception {
         String journalJson = "{\"name\": \"Math Journal\"}";
 
         mvc.perform(post("/api/journals")
@@ -37,7 +41,7 @@ public class JournalTests {
     }
 
     @Test
-    public void whenValidInput_thenCreateStudent(){
+    public void whenValidInput_thenCreateStudent() throws Exception {
         String studentJson = "{\"name\": \"John Doe\"}";
 
         mvc.perform(post("/api/students")
@@ -48,7 +52,7 @@ public class JournalTests {
     }
 
     @Test
-    public void givenJournalId_getStudents(){
+    public void givenJournalId_getStudents() throws Exception {
         Long journalId = 1L;
 
         mvc.perform(get("/api/journals/" + journalId + "/students"))
@@ -57,7 +61,7 @@ public class JournalTests {
     }
 
     @Test
-    public void givenMarkAndStudentId_addMarkToStudent_ThenReturnStudent(){
+    public void givenMarkAndStudentId_addMarkToStudent_ThenReturnStudent() throws Exception {
         Long studentId = 1L;
         Double mark = 5.0;
 
@@ -71,7 +75,7 @@ public class JournalTests {
     }
 
     @Test
-    public void computeAverageGradeForAllStudents_thenReturnAverageGrades(){
+    public void computeAverageGradeForAllStudents_thenReturnAverageGrades() throws Exception {
         mvc.perform(get("/api/students/average"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.averageGrade", is(4.5)));

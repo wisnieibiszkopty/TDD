@@ -26,7 +26,11 @@ public class StudentService {
     }
 
     public Student addGradeToStudent(Long studentId, Double mark){
+        return null;
+    }
 
+    public Double computeAverageGrade(Long studentId){
+        return 0.0;
     }
 
 }
